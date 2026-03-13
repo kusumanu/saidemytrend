@@ -6,22 +6,23 @@ pipeline {
     }
 
     stages {
-        stage("build") { 
+
+        stage('Build') {
             steps {
                 sh 'mvn clean deploy'
             }
         }
-        stage{'SonarQube analysis'} {
-           environment {
-               scannerHome = tool 'sonarscanar'
 
-           }
-           steps {
-               withSonarQubeEnv('manusonarcloud') {
-                   sh "${scannerHome}/bin/sonar-scanner"
-               }
-           }
+        stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'sonarscanar'
+            }
+            steps {
+                withSonarQubeEnv('manusonarcloud') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
         }
+
     }
 }
-
