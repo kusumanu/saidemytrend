@@ -9,18 +9,20 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo "-------------build startred-------"
+                echo "-------------build started-------"
                 sh 'mvn clean deploy -Dmaven.test.skip=true'
                 echo "------------build completed---------"
             }
         }
-        stage('test') {
+
+        stage('Test') {
             steps {
-                echo "-------------unit startred-------"
+                echo "-------------unit started-------"
                 sh 'mvn surefire-report:report'
                 echo "------------unit completed---------"
             }
         }
+
         stage('SonarQube Analysis') {
             environment {
                 scannerHome = tool 'sonarscanar'
@@ -30,21 +32,20 @@ pipeline {
                     sh "${scannerHome}/bin/sonar-scanner"
                 }
             }
-        stage("Quality Gate") {
+        }
+
+        stage('Quality Gate') {
             steps {
                 script {
-                    timeout(time: 1, unit: 'HOURS' ) {
+                    timeout(time: 1, unit: 'HOURS') {
                         def qg = waitForQualityGate()
-                        if (qg.status ≠ 'OK') {
+                        if (qg.status != 'OK') {
                             error "Pipeline aborted due to quality gate failure: ${qg.status}"
                         }
                     }
-               }
-           }
+                }
+            }
         }
 
     }
 }
-~                                                                                                                                                                                                                  
-~                                                                                                                                                                                                                  
-~           
